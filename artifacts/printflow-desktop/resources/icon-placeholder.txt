@@ -1,0 +1,9 @@
+Place your icon files here:
+  - icon.ico  (Windows — 256x256, multi-size ICO)
+  - icon.png  (512x512 PNG used by Electron at runtime)
+
+You can generate a multi-size .ico from a PNG using:
+  https://www.icoconverter.com
+  or the 'sharp' npm package during your build pipeline.
+
+The icon should use the PrintFlow Pro lime green (#B4FF39) accent on a dark background.
