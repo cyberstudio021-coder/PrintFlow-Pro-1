@@ -3,20 +3,31 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: PrintFlow Pro API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: print-jobs
+    description: Print job tracking
+  - name: settings
+    description: Pricing settings
+  - name: dashboard
+    description: Dashboard KPI and summary data
+  - name: analytics
+    description: Revenue analytics
+  - name: reports
+    description: Filtered reports
+  - name: sync
+    description: Google Sheets sync
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,280 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /print-jobs:
+    get:
+      operationId: listPrintJobs
+      tags: [print-jobs]
+      summary: List print jobs
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+        - name: printType
+          in: query
+          schema:
+            type: string
+        - name: paperType
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of print jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrintJobList"
+    post:
+      operationId: createPrintJob
+      tags: [print-jobs]
+      summary: Add a print job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrintJobInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrintJob"
+
+  /print-jobs/{id}:
+    delete:
+      operationId: deletePrintJob
+      tags: [print-jobs]
+      summary: Delete a print job
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get pricing settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update pricing settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsInput"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get KPI stats for dashboard
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [today, week, month, year]
+            default: month
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /dashboard/daily-summary:
+    get:
+      operationId: getDailySummary
+      tags: [dashboard]
+      summary: Get today's daily revenue summary
+      responses:
+        "200":
+          description: Daily summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailySummary"
+
+  /dashboard/recent-activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      summary: Get last 20 print jobs for activity feed
+      responses:
+        "200":
+          description: Recent print jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrintJobList"
+
+  /dashboard/print-distribution:
+    get:
+      operationId: getPrintDistribution
+      tags: [dashboard]
+      summary: Get print type distribution percentages
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [today, week, month, year]
+            default: month
+      responses:
+        "200":
+          description: Distribution breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrintDistribution"
+
+  /analytics/revenue:
+    get:
+      operationId: getRevenueAnalytics
+      tags: [analytics]
+      summary: Get revenue chart data
+      parameters:
+        - name: view
+          in: query
+          schema:
+            type: string
+            enum: [weekly, monthly, yearly]
+            default: monthly
+        - name: year
+          in: query
+          schema:
+            type: integer
+        - name: month
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Revenue analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevenueAnalytics"
+
+  /analytics/printers:
+    get:
+      operationId: getPrinterAnalytics
+      tags: [analytics]
+      summary: Get per-printer usage and revenue stats
+      responses:
+        "200":
+          description: Printer analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrinterAnalyticsList"
+
+  /reports:
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Get filtered report data
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            type: string
+            enum: [today, yesterday, week, month, year, custom]
+            default: month
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Report data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+
+  /sync/status:
+    get:
+      operationId: getSyncStatus
+      tags: [sync]
+      summary: Get Google Sheets sync status
+      responses:
+        "200":
+          description: Sync status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncStatus"
+
+  /sync/trigger:
+    post:
+      operationId: triggerSync
+      tags: [sync]
+      summary: Trigger manual sync to Google Sheets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncTriggerInput"
+      responses:
+        "200":
+          description: Sync result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncResult"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +319,314 @@ components:
       required:
         - status
 
+    PrintJob:
+      type: object
+      required: [id, createdAt, printDate, printTime, printerName, pages, printType, paperSize, paperType, rate, amount]
+      properties:
+        id:
+          type: integer
+        createdAt:
+          type: string
+        printDate:
+          type: string
+        printTime:
+          type: string
+        printerName:
+          type: string
+        pages:
+          type: integer
+        printType:
+          type: string
+        paperSize:
+          type: string
+        paperType:
+          type: string
+        rate:
+          type: number
+        amount:
+          type: number
+
+    PrintJobList:
+      type: object
+      required: [jobs, total]
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/PrintJob"
+        total:
+          type: integer
+
+    PrintJobInput:
+      type: object
+      required: [printerName, pages, printType, paperSize, paperType]
+      properties:
+        printerName:
+          type: string
+        pages:
+          type: integer
+        printType:
+          type: string
+          enum: [BW, Color, Glossy, Photo]
+        paperSize:
+          type: string
+          enum: [A4, A3]
+        paperType:
+          type: string
+          enum: [Plain, Glossy, Photo]
+
+    DeleteResult:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+
+    Settings:
+      type: object
+      required: [id, bwA4Price, bwA3Price, colorA4Price, colorA3Price, glossyPrice, photoPrice, autoSyncEnabled, syncInterval]
+      properties:
+        id:
+          type: integer
+        bwA4Price:
+          type: number
+        bwA3Price:
+          type: number
+        colorA4Price:
+          type: number
+        colorA3Price:
+          type: number
+        glossyPrice:
+          type: number
+        photoPrice:
+          type: number
+        autoSyncEnabled:
+          type: boolean
+        syncInterval:
+          type: integer
+
+    SettingsInput:
+      type: object
+      properties:
+        bwA4Price:
+          type: number
+        bwA3Price:
+          type: number
+        colorA4Price:
+          type: number
+        colorA3Price:
+          type: number
+        glossyPrice:
+          type: number
+        photoPrice:
+          type: number
+        autoSyncEnabled:
+          type: boolean
+        syncInterval:
+          type: integer
+
+    DashboardStats:
+      type: object
+      required: [totalRevenue, totalPages, totalJobs, glossyRevenue, revenueGrowth, pagesGrowth, jobsGrowth, glossyGrowth]
+      properties:
+        totalRevenue:
+          type: number
+        totalPages:
+          type: integer
+        totalJobs:
+          type: integer
+        glossyRevenue:
+          type: number
+        revenueGrowth:
+          type: number
+        pagesGrowth:
+          type: number
+        jobsGrowth:
+          type: number
+        glossyGrowth:
+          type: number
+
+    DailySummary:
+      type: object
+      required: [date, bwPages, colorPages, glossyPages, photoPages, totalPages, bwAmount, colorAmount, glossyAmount, photoAmount, totalAmount]
+      properties:
+        date:
+          type: string
+        bwPages:
+          type: integer
+        colorPages:
+          type: integer
+        glossyPages:
+          type: integer
+        photoPages:
+          type: integer
+        totalPages:
+          type: integer
+        bwAmount:
+          type: number
+        colorAmount:
+          type: number
+        glossyAmount:
+          type: number
+        photoAmount:
+          type: number
+        totalAmount:
+          type: number
+
+    PrintDistribution:
+      type: object
+      required: [bwPercent, colorPercent, glossyPercent, photoPercent, bwPages, colorPages, glossyPages, photoPages]
+      properties:
+        bwPercent:
+          type: number
+        colorPercent:
+          type: number
+        glossyPercent:
+          type: number
+        photoPercent:
+          type: number
+        bwPages:
+          type: integer
+        colorPages:
+          type: integer
+        glossyPages:
+          type: integer
+        photoPages:
+          type: integer
+
+    RevenueDataPoint:
+      type: object
+      required: [label, bwAmount, colorAmount, glossyAmount, photoAmount, totalAmount]
+      properties:
+        label:
+          type: string
+        bwAmount:
+          type: number
+        colorAmount:
+          type: number
+        glossyAmount:
+          type: number
+        photoAmount:
+          type: number
+        totalAmount:
+          type: number
+
+    RevenueAnalytics:
+      type: object
+      required: [view, data, totalRevenue, totalPages]
+      properties:
+        view:
+          type: string
+        totalRevenue:
+          type: number
+        totalPages:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueDataPoint"
+
+    PrinterAnalytics:
+      type: object
+      required: [printerName, totalPages, totalJobs, totalRevenue, bwPages, colorPages, glossyPages, photoPages]
+      properties:
+        printerName:
+          type: string
+        totalPages:
+          type: integer
+        totalJobs:
+          type: integer
+        totalRevenue:
+          type: number
+        bwPages:
+          type: integer
+        colorPages:
+          type: integer
+        glossyPages:
+          type: integer
+        photoPages:
+          type: integer
+
+    PrinterAnalyticsList:
+      type: object
+      required: [printers]
+      properties:
+        printers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PrinterAnalytics"
+
+    Report:
+      type: object
+      required: [filter, dateFrom, dateTo, totalRevenue, totalPages, bwPages, colorPages, glossyPages, photoPages, bwRevenue, colorRevenue, glossyRevenue, photoRevenue, topPrinter, avgRevenuePerPrint, highestRevenueDay, jobs]
+      properties:
+        filter:
+          type: string
+        dateFrom:
+          type: string
+        dateTo:
+          type: string
+        totalRevenue:
+          type: number
+        totalPages:
+          type: integer
+        bwPages:
+          type: integer
+        colorPages:
+          type: integer
+        glossyPages:
+          type: integer
+        photoPages:
+          type: integer
+        bwRevenue:
+          type: number
+        colorRevenue:
+          type: number
+        glossyRevenue:
+          type: number
+        photoRevenue:
+          type: number
+        topPrinter:
+          type: string
+        avgRevenuePerPrint:
+          type: number
+        highestRevenueDay:
+          type: string
+        jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/PrintJob"
+
+    SyncStatus:
+      type: object
+      required: [connected, autoSyncEnabled, lastSyncTime, recordsSynced, syncInterval]
+      properties:
+        connected:
+          type: boolean
+        autoSyncEnabled:
+          type: boolean
+        lastSyncTime:
+          type: ["string", "null"]
+        recordsSynced:
+          type: integer
+        syncInterval:
+          type: integer
+
+    SyncTriggerInput:
+      type: object
+      properties:
+        sheetId:
+          type: ["string", "null"]
+
+    SyncResult:
+      type: object
+      required: [success, recordsSynced, syncTime, message]
+      properties:
+        success:
+          type: boolean
+        recordsSynced:
+          type: integer
+        syncTime:
+          type: string
+        message:
+          type: string

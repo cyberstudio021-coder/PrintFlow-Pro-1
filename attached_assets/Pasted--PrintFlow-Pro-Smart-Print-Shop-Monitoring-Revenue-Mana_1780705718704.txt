@@ -1,0 +1,848 @@
+# PrintFlow Pro
+
+## Smart Print Shop Monitoring & Revenue Management System
+
+### Version
+
+1.0
+
+### Project Type
+
+Windows Desktop Application
+
+### Industry
+
+Print Shop / Cyber Café / Copy Center / Office Printing Management
+
+---
+
+# Executive Summary
+
+PrintFlow Pro is a modern desktop application designed to automatically track all print activities occurring on a computer, calculate print costs based on configurable pricing rules, maintain revenue records, provide business analytics through a premium dashboard, and synchronize all data to Supabase and Google Sheets.
+
+The application is designed for:
+
+* Print Shops
+* Cyber Cafés
+* Schools
+* Libraries
+* Office Print Centers
+* Photocopy Businesses
+
+The goal is to eliminate manual print counting and daily revenue calculations.
+
+---
+
+# Core Objectives
+
+The system shall:
+
+✓ Automatically detect print jobs
+
+✓ Count printed pages
+
+✓ Detect Black & White printing
+
+✓ Detect Color printing
+
+✓ Detect Glossy paper printing
+
+✓ Detect Photo paper printing
+
+✓ Calculate print charges automatically
+
+✓ Maintain daily revenue records
+
+✓ Display analytics dashboards
+
+✓ Synchronize with Supabase Cloud
+
+✓ Synchronize with Google Sheets
+
+✓ Export reports
+
+✓ Support future multi-computer environments
+
+---
+
+# Technology Stack
+
+## Frontend
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+ShadCN UI
+
+Framer Motion
+
+Recharts
+
+---
+
+## Desktop Layer
+
+Electron
+
+---
+
+## Backend
+
+Supabase
+
+---
+
+## Database
+
+PostgreSQL (Supabase)
+
+---
+
+## Authentication
+
+Supabase Auth
+
+---
+
+## Cloud Storage
+
+Supabase Storage
+
+---
+
+## Reporting
+
+Google Sheets API
+
+Excel Export
+
+PDF Export
+
+---
+
+# Application Architecture
+
+Desktop Client
+
+↓
+
+Print Monitoring Service
+
+↓
+
+Pricing Engine
+
+↓
+
+Supabase Database
+
+↓
+
+Dashboard Analytics
+
+↓
+
+Google Sheets Sync
+
+↓
+
+Reports & Exports
+
+---
+
+# Print Monitoring Module
+
+The software runs in the background and monitors the Windows Print Spooler.
+
+Whenever a print job is completed, the application captures:
+
+Date
+
+Time
+
+Printer Name
+
+Pages Printed
+
+Print Type
+
+Paper Type
+
+Paper Size
+
+Applied Rate
+
+Calculated Amount
+
+---
+
+# Pricing Configuration
+
+The owner configures prices once.
+
+Settings Screen:
+
+Black & White Printing
+
+A4 Price
+
+A3 Price
+
+Color Printing
+
+A4 Price
+
+A3 Price
+
+Special Paper
+
+Glossy Price
+
+Photo Price
+
+---
+
+# Pricing Rules
+
+Rule 1
+
+If Paper Type = Glossy
+
+Amount = Pages × Glossy Price
+
+Rule 2
+
+If Paper Type = Photo
+
+Amount = Pages × Photo Price
+
+Rule 3
+
+If Print Type = Color
+
+Amount = Pages × Color Price
+
+Rule 4
+
+Else
+
+Amount = Pages × B/W Price
+
+---
+
+# Database Design
+
+## Table: print_jobs
+
+Columns:
+
+id
+
+created_at
+
+print_date
+
+print_time
+
+printer_name
+
+pages
+
+print_type
+
+paper_size
+
+paper_type
+
+rate
+
+amount
+
+---
+
+Example
+
+07-06-2025
+
+10:15 AM
+
+HP LaserJet
+
+10
+
+B/W
+
+A4
+
+Plain
+
+₹2
+
+₹20
+
+---
+
+## Table: settings
+
+Columns:
+
+id
+
+bw_a4_price
+
+bw_a3_price
+
+color_a4_price
+
+color_a3_price
+
+glossy_price
+
+photo_price
+
+auto_sync_enabled
+
+sync_interval
+
+---
+
+## Table: daily_summary
+
+Columns:
+
+id
+
+summary_date
+
+bw_pages
+
+color_pages
+
+glossy_pages
+
+photo_pages
+
+total_pages
+
+bw_amount
+
+color_amount
+
+glossy_amount
+
+photo_amount
+
+total_amount
+
+---
+
+# Dashboard Design
+
+Theme Style
+
+Dark Premium Dashboard
+
+Background: #050505
+
+Cards: #0C0C0C
+
+Accent: #B4FF39
+
+Font: Inter
+
+Border Radius: 28px
+
+Style Inspiration:
+
+Modern SaaS Analytics Dashboard
+
+---
+
+# Dashboard Layout
+
+Sidebar
+
+Dashboard
+
+Analytics
+
+Printers
+
+Reports
+
+Google Sync
+
+Settings
+
+---
+
+# KPI Cards
+
+Card 1
+
+Total Revenue
+
+Example:
+
+₹18,540
+
+Growth:
+
++22%
+
+---
+
+Card 2
+
+Total Pages Printed
+
+Example:
+
+5,482
+
+---
+
+Card 3
+
+Total Print Jobs
+
+Example:
+
+328
+
+---
+
+Card 4
+
+Glossy Revenue
+
+Example:
+
+₹6,200
+
+---
+
+# Revenue Analytics Section
+
+Supports:
+
+Weekly Revenue
+
+Monthly Revenue
+
+Yearly Revenue
+
+---
+
+Weekly View
+
+Monday
+
+Tuesday
+
+Wednesday
+
+Thursday
+
+Friday
+
+Saturday
+
+Sunday
+
+Revenue displayed as bar chart.
+
+---
+
+Monthly View
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
+Revenue displayed as bar chart.
+
+---
+
+# Print Distribution Chart
+
+Donut Chart
+
+Displays:
+
+Black & White %
+
+Color %
+
+Glossy %
+
+Photo %
+
+Example
+
+B/W = 50%
+
+Color = 35%
+
+Glossy = 10%
+
+Photo = 5%
+
+---
+
+# Daily Revenue Card
+
+Shows:
+
+Black & White Revenue
+
+Color Revenue
+
+Glossy Revenue
+
+Photo Revenue
+
+Total Amount
+
+Example
+
+B/W Revenue ₹640
+
+Color Revenue ₹1200
+
+Glossy Revenue ₹2500
+
+Photo Revenue ₹1000
+
+TOTAL ₹5340
+
+---
+
+# Recent Activity Table
+
+Displays:
+
+Date
+
+Time
+
+Printer
+
+Pages
+
+Print Type
+
+Paper Type
+
+Amount
+
+Latest 20 records shown.
+
+---
+
+# Google Sheets Integration
+
+The application includes one-click Google Sheets synchronization.
+
+---
+
+# Sync Settings
+
+Connect Google Account
+
+Sync Now
+
+Auto Sync
+
+Sync Status
+
+Last Sync Time
+
+Records Synced
+
+---
+
+# Google Sheet Structure
+
+## Sheet 1: Print Transactions
+
+Columns
+
+Date
+
+Time
+
+Printer
+
+Pages
+
+Print Type
+
+Paper Type
+
+Rate
+
+Amount
+
+---
+
+## Sheet 2: Daily Summary
+
+Columns
+
+Date
+
+B/W Pages
+
+Color Pages
+
+Glossy Pages
+
+Photo Pages
+
+Total Pages
+
+B/W Amount
+
+Color Amount
+
+Glossy Amount
+
+Photo Amount
+
+Total Amount
+
+Example
+
+07-06-2025
+
+320
+
+120
+
+25
+
+10
+
+475
+
+₹640
+
+₹1200
+
+₹2500
+
+₹1000
+
+₹5340
+
+---
+
+## Sheet 3: Monthly Summary
+
+Columns
+
+Month
+
+Total Pages
+
+Total Revenue
+
+---
+
+## Sheet 4: Printer Usage
+
+Columns
+
+Printer
+
+Total Pages
+
+Revenue
+
+---
+
+# Reports Module
+
+Available Filters
+
+Today
+
+Yesterday
+
+This Week
+
+This Month
+
+This Year
+
+Custom Range
+
+---
+
+# Report Metrics
+
+Total Revenue
+
+Total Pages
+
+B/W Pages
+
+Color Pages
+
+Glossy Pages
+
+Photo Pages
+
+Revenue Breakdown
+
+Top Printer
+
+Average Revenue Per Print
+
+Highest Revenue Day
+
+---
+
+# Export Module
+
+Supported Formats
+
+Excel (.xlsx)
+
+CSV
+
+PDF
+
+---
+
+# Notifications
+
+Successful Sync
+
+Sync Failed
+
+Printer Offline
+
+Price Updated
+
+Export Completed
+
+---
+
+# Security
+
+Supabase Authentication
+
+Role Based Access
+
+Admin Access
+
+Employee Access
+
+Secure API Keys
+
+Encrypted Communication
+
+---
+
+# Future Roadmap
+
+Phase 2
+
+Multi-PC Monitoring
+
+Central Dashboard
+
+Remote Management
+
+Mobile App
+
+Android
+
+iOS
+
+---
+
+Phase 3
+
+Inventory Tracking
+
+Paper Stock Management
+
+Low Stock Alerts
+
+Ink Monitoring
+
+Printer Health Monitoring
+
+---
+
+Phase 4
+
+Customer Billing
+
+Invoice Generation
+
+WhatsApp Receipt
+
+Email Receipt
+
+QR Code Billing
+
+---
+
+# Business Benefits
+
+Automatic Print Tracking
+
+Automatic Revenue Calculation
+
+No Manual Counting
+
+Cloud Backup
+
+Google Sheets Reporting
+
+Real-Time Analytics
+
+Multi-Computer Ready
+
+Scalable Architecture
+
+Professional Dashboard
+
+Business Growth Insights
+
+Reduced Human Errors
+
+Improved Profit Tracking
+
+---
+
+# Final Success Criteria
+
+The application must automatically detect every print job, calculate charges accurately, maintain complete historical records, generate daily/monthly revenue summaries, synchronize with Supabase and Google Sheets, and provide a premium analytics dashboard that enables shop owners to monitor business performance in real time.

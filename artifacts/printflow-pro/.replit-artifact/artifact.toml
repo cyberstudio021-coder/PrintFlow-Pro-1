@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PrintFlow Pro"
+version = "1.0.0"
+id = "artifacts/printflow-pro"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19614
+
+[services.development]
+run = "pnpm --filter @workspace/printflow-pro run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/printflow-pro", "run", "build" ]
+publicDir = "artifacts/printflow-pro/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19614"
+BASE_PATH = "/"
